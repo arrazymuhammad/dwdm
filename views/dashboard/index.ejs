@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Dashboard</title>
+        <link href="/sbadmin/css/styles.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <div id="">
+            <div id="content">
+                <main>
+                    <div class="container-fluid">
+                        <ol class="breadcrumb mb-4 mt-4">
+                            <li class="breadcrumb-item active"><h1>Dashboard</h1></li>
+                        </ol>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <div class="card-title">Jumlah Pasien Perbulan Tahun : 
+                                        <select onchange="changeTahunPasien(this.value)">
+                                            <option value="2021">2021</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
+                                        </select>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="pasien_tahunan"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <div class="card-title">Total Biaya Tindakan Medis Tahun :
+                                            <select onchange="changeTahunTindakan(this.value)">
+                                                <option value="2021">2021</option>
+                                                <option value="2022">2022</option>
+                                                <option value="2023">2023</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="tindakan_tahunan"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <div class="card-title">Jumlah Pasien Harian Bulan : 
+                                            <select onchange="changeBulanPasien(this.value)">
+                                                <option value="1">Januari</option>
+                                                <option value="2">Februari</option>
+                                                <option value="3">Maret</option>
+                                                <option value="4">April</option>
+                                                <option value="5">Mei</option>
+                                                <option value="6">Juni</option>
+                                                <option value="7">Juli</option>
+                                                <option value="8">Agustus</option>
+                                                <option value="9">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Desember</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="pasien_bulanan"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <div class="card-title">Total Biaya Tindakan Medis Tahun :
+                                            <select onchange="changeBulanTindakan(this.value)">
+                                                <option value="1">Januari</option>
+                                                <option value="2">Februari</option>
+                                                <option value="3">Maret</option>
+                                                <option value="4">April</option>
+                                                <option value="5">Mei</option>
+                                                <option value="6">Juni</option>
+                                                <option value="7">Juli</option>
+                                                <option value="8">Agustus</option>
+                                                <option value="9">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Desember</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="tindakan_bulanan"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="/javascripts/script.js"></script>
+        <script>
+            var pasienTahunanDiv = null
+            var tindakanTahunanDiv = null
+            var pasienBulananDiv = null
+            var tindakanBulananDiv = null
+            var pasienTahunanCtx = null
+            var tindakanTahunanCtx = null
+            var pasienBulananCtx = null
+            var tindakanBulananCtx = null
+
+            var pasien_option = {
+                url : "pasien",
+                field : "pasien",
+                label : "Jumlah Pasien Bulanan Tahun "
+            }
+            var tindakan_option = {
+                url : "tindakan",
+                field : "total_biaya",
+                label : "Total Biaya Tindakan Bulanan Tahun "
+            }
+            var pasien_bulanan_option = {
+                url : "pasien",
+                field : "pasien",
+                label : "Jumlah Pasien Harian Bulan "
+            }
+            var tindakan_bulanan_option = {
+                url : "tindakan",
+                field : "total_biaya",
+                label : "Total Biaya Tindakan Harian Bulan "
+            }
+            window.onload = function() {
+                pasienTahunanDiv = $('#pasien_tahunan');
+                tindakanTahunanDiv = $('#tindakan_tahunan');
+                pasienBulananDiv = $('#pasien_bulanan');
+                tindakanBulananDiv = $('#tindakan_bulanan');
+                loadGraphTahunan(pasienTahunanDiv, pasien_option ,2021,pasienTahunanCtx)
+                loadGraphTahunan(tindakanTahunanDiv, tindakan_option ,2021,tindakanTahunanCtx)
+                loadGraphBulanan(pasienBulananDiv, pasien_bulanan_option ,1, pasienBulananCtx)
+                loadGraphBulanan(tindakanBulananDiv, tindakan_bulanan_option ,1, tindakanBulananCtx)
+            };
+
+            function changeTahunPasien(value){
+                loadGraphTahunan(pasienTahunanDiv, pasien_option ,value, pasienTahunanCtx)
+            }
+            function changeTahunTindakan(value){
+                loadGraphTahunan(tindakanTahunanDiv, tindakan_option ,value, tindakanTahunanCtx)
+            }
+
+            function changeBulanPasien(value){
+                loadGraphBulanan(pasienBulananDiv, pasien_option ,value, pasienBulananCtx)
+            }
+            function changeBulanTindakan(value){
+                loadGraphBulanan(tindakanBulananDiv, tindakan_option ,value, tindakanBulananCtx)
+            }
+
+            const loadGraphTahunan = (ctx, opt, tahun, gctx) => {
+                if(gctx) gctx.destroy()
+                $.get(`/api/${opt.url}-tahun/${tahun}`, (res) => {
+                    var tahun = res.tahun
+                    var items = res.data
+                    var data = {
+                        labels:getLabel(items, 'month'),
+                        datasets: [{
+                            label: `${opt.label} ${tahun}`,
+                            backgroundColor: 'rgb(255,0,0)',
+                            borderColor: 'rgb(255,0,0)',
+                            data: getData(items, opt.field),
+                            fill: false,
+                        }]
+                    }
+                    options = config.options
+                    options.onclick = clickHandler
+                    cfg = {type : config.type, options, data}
+                    gctx = new Chart(ctx, cfg);
+                })
+            }
+
+
+
+            const loadGraphBulanan = (ctx, opt, bulan, gctx) => {
+                if(gctx) gctx.destroy()
+                $.get(`/api/${opt.url}-bulan/${bulan}`, (res) => {
+                    var bulan = res.bulan
+                    var items = res.data
+                    var data = {
+                        labels:getLabel(items, 'date'),
+                        datasets: [{
+                            label: `${opt.label} ${MONTH[bulan]}`,
+                            backgroundColor: 'rgb(255,0,0)',
+                            borderColor: 'rgb(255,0,0)',
+                            data: getData(items, opt.field),
+                            fill: false,
+                        }]
+                    }
+                    options = config.options
+                    options.onclick = clickHandler
+                    cfg = {type : config.type, options, data}
+                    gctx = new Chart(ctx, cfg);
+                })
+            }
+
+            function clickHandler(ev, im){
+                console.log({ev, im})
+            }
+
+            function getLabel(items, type) {
+                let labels = []
+                if(type == 'month'){
+                    for(item of items){
+                        _month = new Date(item[type]).getMonth()+1
+                        labels.push(MONTH[_month])
+                    }
+                }else{
+                    for(item of items){
+                        d = new Date(item[type])
+                        labels.push(d.getDate())
+                    }
+                }
+                return labels
+            }
+            function getData(items, type) {
+                let datas = []
+                for(item of items){
+                    datas.push(item[type])
+                }
+                return datas
+            }
+        </script>
+    </body>
+</html>
