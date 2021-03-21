@@ -1,8 +1,0 @@
-[
-	{"nama" : "Konsultasi Dokter","min" : 50,"max" : 150},
-	{"nama" : "Tebus Obat","min" : 50,"max" : 1000},
-	{"nama" : "Pemeriksaan Laboratorium","min" : 150,"max" : 650},
-	{"nama" : "Tindakan Medis","min" : 150,"max" : 650},
-	{"nama" : "Perawatan Luka","min" : 150,"max" : 250},
-	{"nama" : "Terapi Pemberian Oksigen","min" : 50,"max" : 350}
-]
